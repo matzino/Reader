@@ -37,13 +37,6 @@
 @interface ReaderViewController () <UIScrollViewDelegate, UIGestureRecognizerDelegate, MFMailComposeViewControllerDelegate, UIDocumentInteractionControllerDelegate,
 									ReaderMainToolbarDelegate, ReaderMainPagebarDelegate, ReaderContentViewDelegate, ThumbsViewControllerDelegate>
 
-@property (nonatomic) ReaderDocument *document;
-@property (nonatomic) UIScrollView *theScrollView;
-@property (nonatomic) NSMutableDictionary *contentViews;
-@property (nonatomic, assign) NSInteger currentPage;
-@property (nonatomic, assign) NSInteger minimumPage;
-@property (nonatomic, assign) NSInteger maximumPage;
-
 @end
 
 

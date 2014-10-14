@@ -41,6 +41,13 @@
 
 @property (nonatomic, weak, readwrite) id <ReaderViewControllerDelegate> delegate;
 
+@property (nonatomic) ReaderDocument *document;
+@property (nonatomic) UIScrollView *theScrollView;
+@property (nonatomic) NSMutableDictionary *contentViews;
+@property (nonatomic, assign) NSInteger currentPage;
+@property (nonatomic, assign) NSInteger minimumPage;
+@property (nonatomic, assign) NSInteger maximumPage;
+
 - (instancetype)initWithReaderDocument:(ReaderDocument *)object;
 
 @end
