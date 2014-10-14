@@ -47,6 +47,7 @@
 @property (nonatomic, assign) NSInteger currentPage;
 @property (nonatomic, assign) NSInteger minimumPage;
 @property (nonatomic, assign) NSInteger maximumPage;
+@property (nonatomic, assign) CGFloat scrollViewOutset;
 
 - (instancetype)initWithReaderDocument:(ReaderDocument *)object;
 

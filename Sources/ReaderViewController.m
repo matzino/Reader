@@ -52,8 +52,6 @@
 
 	UIPrintInteractionController *printInteraction;
 
-	CGFloat scrollViewOutset;
-
 	CGSize lastAppearSize;
 
 	NSDate *lastHideTime;
@@ -101,7 +99,7 @@
 
 			viewRect.origin.x = (viewRect.size.width * (page - 1)); // Update X
 
-			contentView.frame = CGRectInset(viewRect, scrollViewOutset, 0.0f);
+			contentView.frame = CGRectInset(viewRect, self.scrollViewOutset, 0.0f);
 		}
 	];
 
@@ -123,7 +121,7 @@
 {
 	CGRect viewRect = CGRectZero; viewRect.size = scrollView.bounds.size;
 
-	viewRect.origin.x = (viewRect.size.width * (page - 1)); viewRect = CGRectInset(viewRect, scrollViewOutset, 0.0f);
+	viewRect.origin.x = (viewRect.size.width * (page - 1)); viewRect = CGRectInset(viewRect, self.scrollViewOutset, 0.0f);
 
 	NSURL *fileURL = self.document.fileURL; NSString *phrase = self.document.password; NSString *guid = self.document.guid; // Document properties
 
@@ -294,7 +292,7 @@
 
 			[notificationCenter addObserver:self selector:@selector(applicationWillResign:) name:UIApplicationWillResignActiveNotification object:nil];
 
-			scrollViewOutset = ((userInterfaceIdiom == UIUserInterfaceIdiomPad) ? SCROLLVIEW_OUTSET_LARGE : SCROLLVIEW_OUTSET_SMALL);
+			self.scrollViewOutset = ((userInterfaceIdiom == UIUserInterfaceIdiomPad) ? SCROLLVIEW_OUTSET_LARGE : SCROLLVIEW_OUTSET_SMALL);
 
 			[object updateDocumentProperties]; self.document = object; // Retain the supplied ReaderDocument object for our use
 
@@ -339,7 +337,7 @@
 		}
 	}
 
-	CGRect scrollViewRect = CGRectInset(viewRect, -scrollViewOutset, 0.0f);
+	CGRect scrollViewRect = CGRectInset(viewRect, -self.scrollViewOutset, 0.0f);
 	self.theScrollView = [[UIScrollView alloc] initWithFrame:scrollViewRect]; // All
 	self.theScrollView.autoresizesSubviews = NO; self.theScrollView.contentMode = UIViewContentModeRedraw;
 	self.theScrollView.showsHorizontalScrollIndicator = NO; self.theScrollView.showsVerticalScrollIndicator = NO;
