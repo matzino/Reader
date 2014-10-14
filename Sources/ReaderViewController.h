@@ -26,6 +26,8 @@
 #import <UIKit/UIKit.h>
 
 #import "ReaderDocument.h"
+#import "ReaderMainToolbar.h"
+#import "ReaderMainPagebar.h"
 
 @class ReaderViewController;
 
@@ -42,6 +44,8 @@
 @property (nonatomic, weak, readwrite) id <ReaderViewControllerDelegate> delegate;
 
 @property (nonatomic) ReaderDocument *document;
+@property (nonatomic) ReaderMainToolbar *mainToolbar;
+@property (nonatomic) ReaderMainPagebar *mainPagebar;
 @property (nonatomic) UIScrollView *theScrollView;
 @property (nonatomic) NSMutableDictionary *contentViews;
 @property (nonatomic, assign) NSInteger currentPage;
