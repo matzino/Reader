@@ -40,6 +40,9 @@
 @property (nonatomic) ReaderDocument *document;
 @property (nonatomic) UIScrollView *theScrollView;
 @property (nonatomic) NSMutableDictionary *contentViews;
+@property (nonatomic, assign) NSInteger currentPage;
+@property (nonatomic, assign) NSInteger minimumPage;
+@property (nonatomic, assign) NSInteger maximumPage;
 
 @end
 
@@ -51,8 +54,6 @@
 	ReaderMainPagebar *mainPagebar;
 
 	UIUserInterfaceIdiom userInterfaceIdiom;
-
-	NSInteger currentPage, minimumPage, maximumPage;
 
 	UIDocumentInteractionController *documentInteraction;
 
@@ -89,7 +90,7 @@
 {
 	CGFloat contentHeight = scrollView.bounds.size.height; // Height
 
-	CGFloat contentWidth = (scrollView.bounds.size.width * maximumPage);
+	CGFloat contentWidth = (scrollView.bounds.size.width * self.maximumPage);
 
 	scrollView.contentSize = CGSizeMake(contentWidth, contentHeight);
 }
@@ -111,7 +112,7 @@
 		}
 	];
 
-	NSInteger page = currentPage; // Update scroll view offset to current page
+	NSInteger page = self.currentPage; // Update scroll view offset to current page
 
 	CGPoint contentOffset = CGPointMake((scrollView.bounds.size.width * (page - 1)), 0.0f);
 
@@ -150,7 +151,7 @@
 
 	NSInteger pageA = (contentOffsetX / viewWidth); pageB += 2; // Add extra pages
 
-	if (pageA < minimumPage) pageA = minimumPage; if (pageB > maximumPage) pageB = maximumPage;
+	if (pageA < self.minimumPage) pageA = self.minimumPage; if (pageB > self.maximumPage) pageB = self.maximumPage;
 
 	NSRange pageRange = NSMakeRange(pageA, (pageB - pageA + 1)); // Make page range (A to B)
 
@@ -180,7 +181,7 @@
 
 		if (pages == 2) // Handle case of only two content views
 		{
-			if ((maximumPage > 2) && ([pageSet lastIndex] == maximumPage)) options = NSEnumerationReverse;
+			if ((self.maximumPage > 2) && ([pageSet lastIndex] == self.maximumPage)) options = NSEnumerationReverse;
 		}
 		else if (pages == 3) // Handle three content views - show the middle one first
 		{
@@ -210,9 +211,9 @@
 
 	NSInteger page = (contentOffsetX / viewWidth); page++; // Page number
 
-	if (page != currentPage) // Only if on different page
+	if (page != self.currentPage) // Only if on different page
 	{
-		currentPage = page; self.document.pageNumber = [NSNumber numberWithInteger:page];
+		self.currentPage = page; self.document.pageNumber = [NSNumber numberWithInteger:page];
 
 		[self.contentViews enumerateKeysAndObjectsUsingBlock: // Enumerate content views
 			^(NSNumber *key, ReaderContentView *contentView, BOOL *stop)
@@ -229,11 +230,11 @@
 
 - (void)showDocumentPage:(NSInteger)page
 {
-	if (page != currentPage) // Only if on different page
+	if (page != self.currentPage) // Only if on different page
 	{
-		if ((page < minimumPage) || (page > maximumPage)) return;
+		if ((page < self.minimumPage) || (page > self.maximumPage)) return;
 
-		currentPage = page; self.document.pageNumber = [NSNumber numberWithInteger:page];
+		self.currentPage = page; self.document.pageNumber = [NSNumber numberWithInteger:page];
 
 		CGPoint contentOffset = CGPointMake((self.theScrollView.bounds.size.width * (page - 1)), 0.0f);
 
@@ -383,7 +384,7 @@
 
 	self.contentViews = [NSMutableDictionary new]; lastHideTime = [NSDate date];
 
-	minimumPage = 1; maximumPage = [self.document.pageCount integerValue];
+	self.minimumPage = 1; self.maximumPage = [self.document.pageCount integerValue];
 }
 
 - (void)viewWillAppear:(BOOL)animated
@@ -447,7 +448,7 @@
 
 	documentInteraction = nil; printInteraction = nil;
 
-	lastAppearSize = CGSizeZero; currentPage = 0;
+	lastAppearSize = CGSizeZero; self.currentPage = 0;
 
 	[super viewDidUnload];
 }
@@ -526,7 +527,7 @@
 
 - (void)decrementPageNumber
 {
-	if ((maximumPage > minimumPage) && (currentPage != minimumPage))
+	if ((self.maximumPage > self.minimumPage) && (self.currentPage != self.minimumPage))
 	{
 		CGPoint contentOffset = self.theScrollView.contentOffset; // Offset
 
@@ -538,7 +539,7 @@
 
 - (void)incrementPageNumber
 {
-	if ((maximumPage > minimumPage) && (currentPage != maximumPage))
+	if ((self.maximumPage > self.minimumPage) && (self.currentPage != self.maximumPage))
 	{
 		CGPoint contentOffset = self.theScrollView.contentOffset; // Offset
 
@@ -560,7 +561,7 @@
 
 		if (CGRectContainsPoint(areaRect, point) == true) // Single tap is inside area
 		{
-			NSNumber *key = [NSNumber numberWithInteger:currentPage]; // Page number key
+			NSNumber *key = [NSNumber numberWithInteger:self.currentPage]; // Page number key
 
 			ReaderContentView *targetView = [self.contentViews objectForKey:key]; // View
 
@@ -646,7 +647,7 @@
 
 		if (CGRectContainsPoint(zoomArea, point) == true) // Double tap is inside zoom area
 		{
-			NSNumber *key = [NSNumber numberWithInteger:currentPage]; // Page number key
+			NSNumber *key = [NSNumber numberWithInteger:self.currentPage]; // Page number key
 
 			ReaderContentView *targetView = [self.contentViews objectForKey:key]; // View
 
@@ -833,13 +834,13 @@
 
 	if (printInteraction != nil) [printInteraction dismissAnimated:YES];
 
-	if ([self.document.bookmarks containsIndex:currentPage]) // Remove bookmark
+	if ([self.document.bookmarks containsIndex:self.currentPage]) // Remove bookmark
 	{
-		[self.document.bookmarks removeIndex:currentPage]; [mainToolbar setBookmarkState:NO];
+		[self.document.bookmarks removeIndex:self.currentPage]; [mainToolbar setBookmarkState:NO];
 	}
 	else // Add the bookmarked page number to the bookmark index set
 	{
-		[self.document.bookmarks addIndex:currentPage]; [mainToolbar setBookmarkState:YES];
+		[self.document.bookmarks addIndex:self.currentPage]; [mainToolbar setBookmarkState:YES];
 	}
 
 #endif // end of READER_BOOKMARKS Option
